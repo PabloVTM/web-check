@@ -1,0 +1,145 @@
+name: 🐳 Build, Test and Publish
+
+on:
+  push:
+    branches: [master]
+    # date versions, e.g. 2026-11-08
+    tags: ['[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]']
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # weekly rebuild to pull in Debian and Chromium security updates (Monday 04:00 UTC)
+    - cron: '0 4 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    name: Build and smoke test image (amd64)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build test image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          load: true
+          tags: web-check:test
+          # always rebuild from the latest base so apt upgrade picks up security fixes
+          pull: true
+          no-cache: true
+
+      - name: Container becomes healthy and serves the app
+        timeout-minutes: 5
+        run: |
+          docker run -d --name wc-test -p 3000:3000 web-check:test
+          status=starting
+          for _ in $(seq 90); do
+            status=$(docker inspect -f '{{.State.Health.Status}}' wc-test)
+            [ "$status" = "starting" ] || break
+            sleep 2
+          done
+          if [ "$status" != "healthy" ]; then
+            echo "container never became healthy (status: $status)"
+            exit 1
+          fi
+
+          curl -sf http://localhost:3000/healthz | grep -q '"ready":true'
+          curl -sf -o /dev/null http://localhost:3000/
+          curl -sf -o /dev/null http://localhost:3000/check
+          curl -sf -o /dev/null http://localhost:3000/checks
+
+      - name: Chromium starts inside the container
+        run: docker exec wc-test chromium --headless=new --no-sandbox --disable-gpu --dump-dom about:blank
+
+      - name: Show container logs on failure
+        if: failure()
+        run: docker logs wc-test || true
+
+      - name: Remove test container
+        if: always()
+        run: docker rm -f wc-test || true
+
+  publish:
+    name: Publish multi-arch image to GHCR
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # push the date git tag on scheduled builds
+      packages: write
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Compute today's date version
+        id: date
+        run: echo "today=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate image tags
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/web-check
+          tags: |
+            # git tag 2026-11-08 -> image tag 2026-11-08
+            type=ref,event=tag
+            # monday rebuild -> image tag of the day
+            type=raw,value=${{ steps.date.outputs.today }},enable=${{ github.event_name == 'schedule' }}
+            type=ref,event=branch
+            type=sha
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' || github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # always rebuild from the latest base so apt upgrade picks up security fixes
+          pull: true
+          no-cache: true
+
+      - name: Create the date git tag for scheduled builds
+        if: github.event_name == 'schedule'
+        # tags pushed with GITHUB_TOKEN do not re-trigger this workflow
+        env:
+          TAG: ${{ steps.date.outputs.today }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          if git ls-remote --exit-code --tags "$remote" "refs/tags/${TAG}" >/dev/null; then
+            echo "git tag ${TAG} already exists, skipping"
+            exit 0
+          fi
+          git tag "${TAG}" "${GITHUB_SHA}"
+          git push "$remote" "refs/tags/${TAG}"

@@ -1,7 +1,11 @@
-name: 🚦 PR Quality Check
+name: 🚦 Quality Check
 
 on:
   pull_request:
+    branches: ['master']
+    paths-ignore:
+      - '**.md'
+  push:
     branches: ['master']
     paths-ignore:
       - '**.md'
@@ -16,6 +20,8 @@ concurrency:
 jobs:
   changes:
     name: 🔎 Detect Changes
+    # reads the PR file list, so only meaningful on pull requests
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
@@ -140,51 +146,6 @@ jobs:
             const { launchBrowser, closeBrowser } = require('/tmp/functions/screenshot/api/_common/browser.js');
             launchBrowser().then(closeBrowser);
           "
-
-  docker-smoke:
-    name: 🐳 Docker Smoke Test
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-
-      - name: Setup Buildx, Pulling via Docker Hub Mirror
-        uses: docker/setup-buildx-action@v4
-        with:
-          driver-opts: image=mirror.gcr.io/moby/buildkit:buildx-stable-1
-          buildkitd-config-inline: |
-            [registry."docker.io"]
-              mirrors = ["mirror.gcr.io"]
-
-      - name: Build Docker Image
-        run: docker buildx build --load -t web-check:test .
-        timeout-minutes: 25
-
-      - name: Verify Container Starts
-        timeout-minutes: 5
-        run: |
-          docker run -d --name wc-test -p 3000:3000 web-check:test
-          for _ in $(seq 60); do
-            STATUS=$(docker inspect -f '{{.State.Health.Status}}' wc-test)
-            [ "$STATUS" = "starting" ] || break
-            sleep 2
-          done
-          if [ "$STATUS" != "healthy" ]; then
-            echo "❌ Container never became healthy (status: $STATUS)"
-            docker logs wc-test
-            exit 1
-          fi
-          HTTP_CODE=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/check || true)
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "❌ GUI not serving (HTTP $HTTP_CODE)"
-            docker logs wc-test
-            exit 1
-          fi
-          echo "✅ Container healthy and serving"
-          docker stop wc-test && docker rm wc-test
 
   dependency-review:
     name: 🔒 Dependency Review

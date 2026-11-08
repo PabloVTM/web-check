@@ -48,7 +48,9 @@ COPY --from=build /app/api ./api
 COPY --from=build /app/public ./public
 COPY --from=build /app/server.js /app/healthcheck.js /app/package.json /app/yarn.lock ./
 
+# Upgrade first so each weekly rebuild picks up Debian security fixes
 RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
     apt-get install -y --no-install-recommends chromium traceroute tini && \
     rm -rf /var/lib/apt/lists/*
 
@@ -65,10 +67,10 @@ ENV CHROME_PATH='/usr/bin/chromium' \
 
 LABEL org.opencontainers.image.title="Web-Check" \
       org.opencontainers.image.description="All-in-one OSINT tool for analysing any website" \
-      org.opencontainers.image.url="https://web-check.xyz" \
-      org.opencontainers.image.source="https://github.com/lissy93/web-check" \
+      org.opencontainers.image.url="https://github.com/PabloVTM/web-check" \
+      org.opencontainers.image.source="https://github.com/PabloVTM/web-check" \
       org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.vendor="Alicia Sykes"
+      org.opencontainers.image.vendor="PabloVTM, based on the work of Alicia Sykes"
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
     CMD ["node", "healthcheck.js"]
