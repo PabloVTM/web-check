@@ -1,6 +1,11 @@
 :root {
-  --font-sans: 'Hubot Sans', 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'PTMono', ui-monospace, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  // PabloVTM terminal theme: system monospace fonts only, nothing to download
+  --font-sans:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono',
+    monospace;
+  --font-mono:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', 'DejaVu Sans Mono',
+    monospace;
 }
 
 @font-face {

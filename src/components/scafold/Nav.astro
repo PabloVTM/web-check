@@ -1,14 +1,12 @@
 ---
-import Logo from '@components/molecules/Logo.astro';
+import Prompt from '@components/molecules/Prompt.astro';
 ---
 
 <nav class="navbar">
   <div class="nav-left">
     <a href="/" class="logo-link" aria-label="Home">
-      <Logo />
       <h2 class="site-title">
-        <span class="first">Web</span>
-        <span class="second">Check</span>
+        <Prompt />
       </h2>
     </a>
     <slot name="tool" />
@@ -68,15 +66,8 @@ import Logo from '@components/molecules/Logo.astro';
         .site-title {
           margin: 0;
           font-weight: bold;
-          color: var(--primary);
-          font-size: 1.8rem;
-          .first {
-            color: var(--primary);
-          }
-          .second {
-            color: var(--text-color);
-            font-style: italic;
-          }
+          font-size: 1.4rem;
+          white-space: nowrap;
         }
       }
     }

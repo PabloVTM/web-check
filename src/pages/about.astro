@@ -6,6 +6,7 @@ import { checkIds } from '@/data/checks';
 const authorName = 'Alicia Sykes';
 const authorLink = 'https://aliciasykes.com';
 const repoLink = 'https://github.com/lissy93/web-check';
+const forkLink = 'https://github.com/PabloVTM/web-check';
 const licenseLink = `${repoLink}/blob/master/LICENSE`;
 const currentYear = new Date().getFullYear();
 
@@ -33,6 +34,11 @@ const elsewhere = [
     <p>
       It's built and maintained by <a href={authorLink}>{authorName}</a>, and the source is on{' '}
       <a href={repoLink}>GitHub</a>.
+    </p>
+    <p>
+      This edition is maintained by <a href="https://github.com/PabloVTM">PabloVTM</a>, with the
+      terminal theme shared by the other PabloVTM tools. Its source is at{' '}
+      <a href={forkLink}>PabloVTM/web-check</a>.
     </p>
     <ul class="elsewhere">
       {elsewhere.map((link) => (

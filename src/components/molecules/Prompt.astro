@@ -1,0 +1,52 @@
+---
+// "pablo@vtm:~/web-check_" shell prompt, the title of the PabloVTM terminal theme.
+// The parts are rendered from a list so no whitespace sneaks in between them.
+interface Props {
+  cursor?: boolean;
+}
+
+const { cursor = true } = Astro.props;
+
+const parts = [
+  { className: 'user', text: 'pablo@vtm' },
+  { className: 'sep', text: ':' },
+  { className: 'path', text: '~/web-check' },
+  ...(cursor ? [{ className: 'cursor', text: '_' }] : []),
+];
+---
+
+<span class="prompt" aria-label="pablo@vtm:~/web-check">
+  {parts.map((part) => (
+    <span class={part.className} aria-hidden="true">
+      {part.text}
+    </span>
+  ))}
+</span>
+
+<style lang="scss">
+  .prompt {
+    font-family: var(--font-mono);
+    white-space: nowrap;
+  }
+  .user,
+  .cursor {
+    color: var(--primary);
+  }
+  .sep {
+    color: var(--text-color-tertiary);
+  }
+  .path {
+    color: var(--accent);
+  }
+  .cursor {
+    animation: prompt-blink 1.1s steps(1) infinite;
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+  @keyframes prompt-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+</style>

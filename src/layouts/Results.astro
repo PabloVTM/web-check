@@ -20,14 +20,6 @@ const site = target?.includes('/') ? undefined : target?.replace(/^www\./, '');
 ---
 
 <PageLayout {...page}>
-  <link
-    slot="head"
-    href="/fonts/PTMono-Regular.woff2"
-    as="font"
-    rel="preload"
-    type="font/woff2"
-    crossorigin="anonymous"
-  />
   {site ? (
     <NavBar slot="nav">
       {tool && (

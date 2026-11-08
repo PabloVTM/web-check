@@ -59,7 +59,7 @@ jobs:
           curl -sf http://localhost:3000/healthz | grep -q '"ready":true'
           curl -sf -o /dev/null http://localhost:3000/
           curl -sf -o /dev/null http://localhost:3000/check
-          curl -sf -o /dev/null http://localhost:3000/checks
+          curl -sf http://localhost:3000/checks | grep -q 'pablo@vtm'
 
       - name: Chromium starts inside the container
         run: docker exec wc-test chromium --headless=new --no-sandbox --disable-gpu --dump-dom about:blank

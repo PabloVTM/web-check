@@ -1,5 +1,5 @@
 ---
-import Logo from '@components/molecules/Logo.astro';
+import Prompt from '@components/molecules/Prompt.astro';
 import { categoryIds, toolName } from '@/data/categories';
 import { checkIds } from '@/data/checks';
 
@@ -9,7 +9,8 @@ interface Props {
 
 const { miniView = false } = Astro.props;
 
-const repo = 'github.com/lissy93/web-check';
+const repo = 'github.com/PabloVTM/web-check';
+const upstream = 'https://github.com/lissy93/web-check';
 const github = `https://${repo}`;
 
 const licenseText = 'MIT';
@@ -41,7 +42,7 @@ const linkGroups = [
     links: [
       { label: 'About', href: aboutLink },
       { label: 'Source code', href: github },
-      { label: 'Report an issue', href: `${github}/issues` },
+      { label: 'Report an issue', href: `${upstream}/issues` },
       { label: 'Sponsor', href: 'https://github.com/sponsors/Lissy93' },
     ],
   },
@@ -53,8 +54,7 @@ const linkGroups = [
     <div class="links">
       <div class="intro">
         <a href="/">
-          <Logo />
-          {projectName}
+          <Prompt cursor={false} />
         </a>
         <p>
           The all-in-one OSINT and security tool, for revealing the inner workings of any website.
@@ -94,7 +94,10 @@ const linkGroups = [
       <a href={authorLink} target="_blank">
         {authorName}
       </a>{' '}
-      {currentYear}
+      {currentYear} - forked by{' '}
+      <a href="https://github.com/PabloVTM" target="_blank">
+        PabloVTM
+      </a>
     </p>
   </div>
 </footer>
@@ -122,9 +125,6 @@ const linkGroups = [
         font-size: 1.2rem;
         font-weight: 700;
         color: var(--text-color);
-        :global(.logo) {
-          width: 1.5em;
-        }
       }
       p {
         margin: 0.5rem 0 0;

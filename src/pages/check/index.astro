@@ -5,7 +5,7 @@ import HomeBackground from '@components/homepage/HomeBackground';
 import ScanForm from '@components/form/ScanForm.astro';
 import SponsorCard from '@components/molecules/SponsorCard.astro';
 import Settings from '@components/settings/Settings.astro';
-import Logo from '@components/molecules/Logo.astro';
+import Prompt from '@components/molecules/Prompt.astro';
 import { normalizeAddress } from '../../client/utils/address-type-checker';
 import { isCategory } from '@/data/categories';
 import { checks, checkIds, isCheck } from '@/data/checks';
@@ -31,8 +31,7 @@ if (redirectPath) return Astro.redirect(redirectPath);
   <div class="home">
     <header>
       <h1>
-        <Logo />
-        Web <em>Check</em>
+        <Prompt />
       </h1>
       <Settings />
     </header>
@@ -81,7 +80,7 @@ if (redirectPath) return Astro.redirect(redirectPath);
       align-items: center;
       gap: 0.75rem;
       margin: 0;
-      font-size: clamp(2.25rem, 6vw, 3.5rem);
+      font-size: clamp(1.5rem, 4.5vw, 2.75rem);
       color: var(--primary);
 
       :global(.logo) {
