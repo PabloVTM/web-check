@@ -1,5 +1,5 @@
 ---
-// "pablo@vtm:~/web-check_" shell prompt, the title of the PabloVTM terminal theme.
+// "pablo@systems:~/web-check_" shell prompt, the title of the PabloVTM terminal theme.
 // The parts are rendered from a list so no whitespace sneaks in between them.
 interface Props {
   cursor?: boolean;
@@ -8,14 +8,14 @@ interface Props {
 const { cursor = true } = Astro.props;
 
 const parts = [
-  { className: 'user', text: 'pablo@vtm' },
+  { className: 'user', text: 'pablo@systems' },
   { className: 'sep', text: ':' },
   { className: 'path', text: '~/web-check' },
   ...(cursor ? [{ className: 'cursor', text: '_' }] : []),
 ];
 ---
 
-<span class="prompt" aria-label="pablo@vtm:~/web-check">
+<span class="prompt" aria-label="pablo@systems:~/web-check">
   {parts.map((part) => (
     <span class={part.className} aria-hidden="true">
       {part.text}
@@ -28,9 +28,11 @@ const parts = [
     font-family: var(--font-mono);
     white-space: nowrap;
   }
-  .user,
-  .cursor {
+  .user {
     color: var(--primary);
+  }
+  .cursor {
+    color: var(--accent-vivid, var(--accent));
   }
   .sep {
     color: var(--text-color-tertiary);

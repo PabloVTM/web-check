@@ -1,26 +1,29 @@
 :root {
-  // PabloVTM "Terminal" theme, shared with the other PabloVTM tools
+  // PabloSystems theme, shared with the other PabloVTM tools: Deep Sage Green
+  // #4B5A50, Warm Ivory #F1EEE3, Vibrant Vermillion Red #F20B0B for details.
   color-scheme: dark;
-  --primary: #3ddc97;
-  --primary-increased-contrast: #5fe6ab;
-  --text-color: #c9d1d9;
-  --text-color-secondary: #a5aeb8;
-  --text-color-tertiary: #8b949e;
-  --background: #0d1117;
-  --background-raised: #161b22;
-  --background-overlay: #1c2128;
-  --background-sunken: #010409;
-  --border: #30363d;
-  --primary-transparent: #3ddc970d;
+  --primary: #a9baae;
+  --primary-increased-contrast: #bccbc0;
+  --text-color: #f1eee3;
+  --text-color-secondary: #c9c6b9;
+  --text-color-tertiary: #9da69f;
+  --background: #252c28;
+  --background-raised: #2e3731;
+  --background-overlay: #38433c;
+  --background-sunken: #1c221f;
+  --border: #4b5a50;
+  --primary-transparent: #a9baae14;
   --shadow-color: #00000080;
-  --accent: #f2c14e;
+  // Details: vermillion as text (--accent) and the raw brand red (--accent-vivid)
+  --accent: #ff7a70;
+  --accent-vivid: #f20b0b;
 
   // Action Colors
-  --info: #58a6ff;
-  --success: #3fb950;
-  --warning: #f2c14e;
-  --error: #f0883e;
-  --danger: #ff7b72;
+  --info: #8ab4d8;
+  --success: #8fc79a;
+  --warning: #e3b663;
+  --error: #ff9a6b;
+  --danger: #ff7a70;
 
   // See-through lines and fills, which follow the theme's text and primary colors
   --line: color-mix(in srgb, var(--text-color) 10%, transparent);
@@ -32,25 +35,26 @@
 
 html[data-theme='light'] {
   color-scheme: light;
-  --primary: #1a7f4b;
-  --primary-increased-contrast: #13633a;
-  --text-color: #1f2328;
-  --text-color-secondary: #424a53;
-  --text-color-tertiary: #59636e;
-  --background: #f6f8fa;
-  --background-raised: #ffffff;
-  --background-overlay: #ffffff;
-  --background-sunken: #eaeef2;
-  --border: #d0d7de;
-  --primary-transparent: #1a7f4b33;
+  --primary: #4b5a50;
+  --primary-increased-contrast: #3e4b43;
+  --text-color: #2b332e;
+  --text-color-secondary: #4f5a53;
+  --text-color-tertiary: #5b665f;
+  --background: #f1eee3;
+  --background-raised: #f8f6ef;
+  --background-overlay: #fdfcf8;
+  --background-sunken: #e7e3d6;
+  --border: #d3cdbb;
+  --primary-transparent: #4b5a5026;
   --shadow-color: #0000001f;
-  --accent: #9a6700;
+  --accent: #c40808;
+  --accent-vivid: #f20b0b;
 
-  --info: #0969da;
-  --success: #1a7f37;
-  --warning: #9a6700;
-  --error: #bc4c00;
-  --danger: #cf222e;
+  --info: #2f5f86;
+  --success: #3b6b45;
+  --warning: #8a5a00;
+  --error: #a8430f;
+  --danger: #c40808;
 }
 
 // High contrast, from the OS or the settings menu. Mixes keep it working in both themes
@@ -67,7 +71,7 @@ html[data-contrast='more'] {
   // Light theme's text and primary are too pale for this, so go darker
   &[data-theme='light'] {
     --text-color: #000000;
-    --primary: #13633a;
-    --primary-increased-contrast: #0e4a2b;
+    --primary: #3e4b43;
+    --primary-increased-contrast: #2b332e;
   }
 }

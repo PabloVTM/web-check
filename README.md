@@ -6,7 +6,7 @@
 
 An all-in-one OSINT and security tool that reveals how any website works: IP and DNS, SSL chain, headers, cookies, DNSSEC, mail config, open ports, trackers, redirects, security policies, archives, performance and more.
 
-This is a fork of [lissy93/web-check](https://github.com/lissy93/web-check) by [Alicia Sykes](https://aliciasykes.com), maintained at [PabloVTM/web-check](https://github.com/PabloVTM/web-check) with the PabloVTM terminal theme shared with the other PabloVTM tools.
+This is a fork of [lissy93/web-check](https://github.com/lissy93/web-check) by [Alicia Sykes](https://aliciasykes.com), maintained at [PabloVTM/web-check](https://github.com/PabloVTM/web-check) with the PabloSystems theme shared with the other PabloVTM tools: Deep Sage Green `#4B5A50`, Warm Ivory `#F1EEE3` and Vibrant Vermillion Red `#F20B0B` for details, system monospace fonts and a `pablo@systems:~/web-check` prompt as title, in light and dark modes.
 
 ![Screenshot](./.github/screenshots/web-check-screenshot10.png)
 
@@ -17,7 +17,7 @@ Images are published to GitHub Container Registry for `linux/amd64` and `linux/a
 | Tag | Content |
 | --- | --- |
 | `ghcr.io/pablovtm/web-check:latest` | Latest build of `master`. |
-| `ghcr.io/pablovtm/web-check:YYYY-MM-DD` | Dated version, e.g. `2026-11-08`. A new one is built every Monday with the latest Debian and Chromium security updates. |
+| `ghcr.io/pablovtm/web-check:YYYY-MM-DD` | Dated version, e.g. `2026-11-08`. Each build upgrades the Debian packages, so a new dated version also brings the latest Debian and Chromium security fixes. |
 
 ## Quick start
 
@@ -72,6 +72,17 @@ Everything is optional. Pass variables with `-e` / `environment:`, or put them i
 | `PUBLIC_API_ENDPOINT` | API endpoint used by the frontend, e.g. `/api`. |
 
 Variables prefixed with `PUBLIC_` are read by the frontend at build time: rebuild the image after changing them.
+
+## Releasing
+
+Images are built by GitHub Actions. A push to `master` publishes `latest`; a dated version is published by pushing a tag named after the day:
+
+```bash
+git tag 2026-11-09
+git push origin 2026-11-09
+```
+
+The workflow tests the image first, then publishes `ghcr.io/pablovtm/web-check:2026-11-09` and `latest` for `linux/amd64` and `linux/arm64`. There is no scheduled rebuild: tag a new version when you want one.
 
 ## Building
 
